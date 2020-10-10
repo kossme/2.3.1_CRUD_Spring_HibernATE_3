@@ -1,0 +1,89 @@
+package web.Controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import web.Model.User;
+import web.Service.UserService;
+
+
+@Controller
+public class UserController {
+    // Constructor based Dependency Injection
+    private UserService userService;
+
+    public UserController() {
+
+    }
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping(value = "/")
+    public String firstPage(ModelMap model) {
+        List<User> usersList = new ArrayList<>();
+        /*usersList.add("Hello!");
+        usersList.add("I'm Spring MVC application");
+        usersList.add("5.2.0 version by sep'19 ");*/
+        //userService.add(new User("User3", "Lastname3", "user3@mail.ru"));
+        //userService.add(new User("User2", "Lastname2", "user2@mail.ru"));
+        //userService.removeUser(2);
+        //userService.removeUser(1);
+        //userService.removeUser(1);
+        //userService.removeUser(1);
+        usersList = userService.listUsers();
+        model.addAttribute("usersList", usersList);
+        System.out.println(usersList);
+        return"index";
+    }
+
+
+    @GetMapping("/deleteConfirm/{id}")
+    public String deleteConfirm(@PathVariable(value="id") long id, Model model) {
+        User user = userService.findUserById(id);
+        return "deleteConfirm";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteUserById(@RequestParam(value = "id", required = true) long id, Model model) {
+        userService.removeUser(id);
+        return "index";
+    }
+//"redirect:/index"
+
+    @GetMapping("/addNewUserForm")
+    public String showSignUpForm(Model model) {
+        model.addAttribute("user", new User(null, null, null));
+        return "new";
+    }
+
+    @PostMapping()
+    public String create(@RequestParam("firstName") String firstName,
+                         @RequestParam("lastName") String lasttName,
+                         @RequestParam("email") String email, Model model) {
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lasttName);
+        user.setEmail(email);
+
+        userService.add(user);
+
+        return "redirect:/";
+    }
+
+    @ModelAttribute
+    public String populateHeaderMessage(){
+        return "*****Users Database*****";
+    }
+
+
+}
+
