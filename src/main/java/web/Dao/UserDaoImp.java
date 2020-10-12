@@ -48,6 +48,15 @@ public class UserDaoImp implements UserDao {
     }
 
     @Override
+    public void updateUser(User user){
+        String sqlQuery = "update users set firstName= '" +  user.getFirstName() +
+                "', lastName= '" + user.getLastName() +
+                "',  email= '" + user.getEmail() +
+                "' where id=" +user.getId();
+        entityManager.createNativeQuery(sqlQuery).executeUpdate();
+    }
+
+    @Override
     public User findUserById(long id) {
         return entityManager.find(User.class, id);
     }

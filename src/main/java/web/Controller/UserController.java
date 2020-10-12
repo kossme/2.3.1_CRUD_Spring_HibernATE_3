@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.JsonPath;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -42,20 +43,21 @@ public class UserController {
         usersList = userService.listUsers();
         model.addAttribute("usersList", usersList);
         System.out.println(usersList);
-        return"index";
+        return "index";
     }
 
 
     @GetMapping("/deleteConfirm/{id}")
-    public String deleteConfirm(@PathVariable(value="id") long id, Model model) {
+    public String deleteConfirm(@PathVariable("id") Long id, Model model) {
         User user = userService.findUserById(id);
+        model.addAttribute("user", userService.findUserById(id));
         return "deleteConfirm";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteUserById(@RequestParam(value = "id", required = true) long id, Model model) {
+    public String deleteUserById(@PathVariable(value = "id", required = true) long id, Model model) {
         userService.removeUser(id);
-        return "index";
+        return "redirect:/";
     }
 //"redirect:/index"
 
@@ -73,15 +75,30 @@ public class UserController {
         user.setFirstName(firstName);
         user.setLastName(lasttName);
         user.setEmail(email);
-
         userService.add(user);
-
         return "redirect:/";
     }
 
-    @ModelAttribute
-    public String populateHeaderMessage(){
-        return "*****Users Database*****";
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("user", userService.findUserById(id));
+        return "updateForm";
+    }
+
+    @PostMapping("/update/{id}")
+    public String update(@PathVariable(value = "id", required = true) long id,
+                         @RequestParam("firstName") String firstName,
+                         @RequestParam("lastName") String lasttName,
+                         @RequestParam("email") String email, Model model) {
+        if (firstName != null && lasttName != null && email != null) {
+            User user = userService.findUserById(id);
+            user.setFirstName(firstName);
+            user.setLastName(lasttName);
+            user.setEmail(email);
+            userService.updateUser(user);
+        }
+        return "redirect:/";
     }
 
 

@@ -3,22 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>UsersList</title>
-    <style>
-        table th, table td {padding: 5px;}
-        .row {
-            front-style: italic;
-        }
-        .even-row {
-            color: blue;
-        }
-        .odd-row {
-            color: blue;
-        }
-    </style>
 </head>
 <body>
 <h1>Here is actual all Users data:</h1>
-<table border="1">
+
+<table>
     <tr>
         <th>Id</th>
         <th>First Name</th>
@@ -26,33 +15,24 @@
         <th>Email</th>
         <th>Edit</th>
         <th>Delete</th>
-
     </tr>
-
-    <tr th:each="user, state : ${usersList}"
-        class="row" th:classappend="${state.odd} ? 'odd-row' : 'even-row'">
-        <td th:utext="${user.id}">Id</td>
-        <td th:utext="${user.firstName}">First Name</td>
-        <td th:utext="${user.lastName}">Last Name</td>
-        <td th:utext="${user.email}">Email</td>
-        <td th:utext="Edit">Edit</td>
-        <td>
-            <a th:href="@{/deleteConfirm/{user.id}}" class="btn btn-danger">Delete</a>
-        </td>
-
-    </tr>
+    <tr th:each="user : ${usersList}">
+        <td th:text="${user.Id}"></td>
+        <td th:text="${user.firstName}"></td>
+        <td th:text="${user.lastName}"></td>
+        <td th:text="${user.email}"></td>
+            <td>
+                <a href="" th:href="@{'/edit/' + ${user.id}}">Edit</a>
+            </td>
+            <td>
+                <a href="" th:href="@{'/deleteConfirm/' + ${user.id}}">Delete</a>
+            </td>
+        </tr>
 </table>
 
 <h2>
     <a th:href="@{addNewUserForm}">Add new User</a>
 </h2>
 
-<h3> </h3>
-
-<h4>
-
-    <button type="submit" name="Add new User" th:text="@{addNewUserForm}">Add new User</button>
-
-</h4>
 </body>
 </html>

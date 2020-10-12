@@ -12,10 +12,11 @@ public interface UserService {
 
     void createUsersTable();
 
-    public void removeUser(long id);
+    void removeUser(long id);
 
     User findUserById(long id);
 
+    void updateUser(User user);
 
 
 }
